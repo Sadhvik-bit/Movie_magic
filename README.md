@@ -36,6 +36,8 @@ View listings, choose showtimes, book your seat, and enjoy an immersive UI – a
 
 ## 📁 Folder Structure
 
+``` bash
+
 movie-magic/
 │
 ├── backend/
@@ -54,6 +56,8 @@ movie-magic/
 ├── package.json # Project dependencies
 ├── README.md # Project info
 └── requirements.txt # (If you’re adding Python features)
+
+```
 
 📦 Features Coming Soon
 
