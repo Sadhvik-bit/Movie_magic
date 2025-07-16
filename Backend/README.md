@@ -43,11 +43,13 @@ backend/
 │
 ├── models/
 │   └── Movie.js       # Mongoose schema for movies
-│   └── Showtime.js    # Mongoose schema for showtimes (if any)
+│   └── Showtime.js    # Mongoose schema for showtimes 
+|   └── Booking.js     # Mongoose schema for Booking
 │
 ├── routes/
-│   └── movieRoutes.js # API routes for movies and showtimes
-
+│   └── movieRoutes.js # API routes for movies
+|   └── bookingRoutes.js # API routes for booking
+|   └── showtimeRoutes.js # API routes for showtimes
 
 ```
 
