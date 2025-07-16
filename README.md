@@ -70,5 +70,4 @@ movie-magic/
 🤝 Contribute
 Feel free to fork, star ⭐, or open issues. Let’s make this app even more magical!
 
-✨ Made with ❤️ by Ammu
-i want my thing to look like this
+✨ Made with ❤️ by Sadhvik
