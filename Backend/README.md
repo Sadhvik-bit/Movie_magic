@@ -63,6 +63,6 @@ backend/
 - 📈 Analytics dashboard
 
 
-✨ Made with ❤️ by Ammu
+✨ Made with ❤️ by Sadhvik
 
 
