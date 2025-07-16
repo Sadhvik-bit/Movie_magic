@@ -49,5 +49,5 @@ frontend/
 - All movie/showtime data is currently hardcoded or simulated.
 - Designed for future integration with backend via APIs.
 
-✨ Made with ❤️ by Ammu
+✨ Made with ❤️ by Sadhvik
 
