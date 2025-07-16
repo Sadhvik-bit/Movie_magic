@@ -61,11 +61,11 @@ movie-magic/
 
 📦 Features Coming Soon
 
-🧑‍💼 Admin dashboard for managing movies
-💳 Payment gateway integration
-🪑 Real-time seat availability
-🌙 Dark/Light mode toggle
-🔐 JWT-based user login
+- 🧑‍💼 Admin dashboard for managing movies
+- 💳 Payment gateway integration
+- 🪑 Real-time seat availability
+- 🌙 Dark/Light mode toggle
+- 🔐 JWT-based user login
 
 🤝 Contribute
 Feel free to fork, star ⭐, or open issues. Let’s make this app even more magical!
