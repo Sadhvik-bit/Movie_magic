@@ -1,0 +1,176 @@
+/* ========== Navbar Styles ========== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111;
+  padding: 10px 20px;
+  color: white;
+}
+.navbar .nav-left {
+  font-size: 20px;
+  font-weight: bold;
+}
+.navbar .nav-right a {
+  color: white;
+  margin-left: 15px;
+  text-decoration: none;
+  font-weight: 500;
+}
+.navbar .nav-right a:hover {
+  text-decoration: underline;
+}
+
+/* ========== Global Styles ========== */
+body {
+  font-family: Arial, sans-serif;
+  background: #121212;
+  color: #fff;
+  padding: 20px;
+}
+input {
+  padding: 8px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: none;
+}
+button {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background: #ff5c58;
+  color: white;
+}
+button:hover {
+  background: #ff7e75;
+}
+
+/* ========== Booking Form ========== */
+#booking-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+#booking-form input[type="text"],
+#booking-form input[type="email"] {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  width: 220px;
+}
+#booking-form button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  background: #ff5c58;
+  color: white;
+  cursor: pointer;
+}
+#booking-form button:hover {
+  background: #ff7e75;
+}
+
+/* ========== Movie List & Card ========== */
+#movie-list {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.movie-card {
+  background: #1e1e1e;
+  padding: 10px;
+  border-radius: 8px;
+  width: 200px;
+}
+.movie-card img {
+  width: 100%;
+  border-radius: 4px;
+}
+
+/* ========== Movie Details Page ========== */
+#movie-details {
+  padding: 20px;
+  background: #1e1e1e;
+  border-radius: 10px;
+}
+#movie-details img {
+  margin-bottom: 10px;
+}
+#movie-details button {
+  margin: 5px;
+  padding: 10px;
+  background-color: #ff5c58;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* ========== Seat Grid (booking.html) ========== */
+#seat-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  gap: 10px;
+  margin: 20px 0;
+  justify-content: center;
+}
+.seat {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+.available {
+  background-color: #4caf50;
+  color: white;
+}
+.booked {
+  background-color: #aaa;
+  color: white;
+  cursor: not-allowed;
+}
+.selected {
+  background-color: #ff9800;
+  color: white;
+}
+
+/* ========== Ticket Confirmation (ticket.html) ========== */
+.ticket-container {
+  padding: 20px;
+  background: #222;
+  color: #fff;
+  border-radius: 10px;
+  width: 300px;
+  margin: 50px auto;
+  text-align: center;
+}
+.ticket-container img {
+  margin-top: 20px;
+}
+
+/* ========== Booking History Cards ========== */
+#ticket-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.ticket-container {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  width: 260px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+.ticket-container img {
+  margin-top: 10px;
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking History</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- 🔗 NAVBAR -->
+    <nav class="navbar">
+      <div class="nav-left">🎬 Movie Magic</div>
+      <div class="nav-right">
+        <a href="index.html">Home</a>
+        <a href="history.html">🧾 Booking History</a>
+      </div>
+    </nav>
+
+    <h1>🧾 Your Booking History</h1>
+
+    <div style="margin: 20px 0">
+      <input type="text" id="userName" placeholder="Enter your name" />
+      <input type="text" id="movieFilter" placeholder="Filter by Movie Title" />
+      <input type="date" id="dateFilter" />
+      <button onclick="loadHistory()">View History</button>
+    </div>
+
+    <div id="ticket-list"></div>
+
+    <script>
+      function loadHistory() {
+        const name = document.getElementById("userName").value.trim();
+        const title = document.getElementById("movieFilter").value.trim();
+        const date = document.getElementById("dateFilter").value;
+
+        if (!name) {
+          alert("Please enter your name");
+          return;
+        }
+
+        const params = new URLSearchParams();
+        params.append("name", name);
+        if (title) params.append("title", title);
+        if (date) params.append("date", date);
+
+        fetch(`http://localhost:5000/api/history?${params.toString()}`)
+          .then((res) => res.json())
+          .then((bookings) => {
+            const container = document.getElementById("ticket-list");
+            container.innerHTML = "";
+
+            if (bookings.length === 0) {
+              container.innerHTML = "<p>❌ No matching bookings found.</p>";
+              return;
+            }
+
+            bookings.forEach(
+              ({ _id, user, email, seats, createdAt, showtimeId }) => {
+                const movie = showtimeId?.movieId?.title || "N/A";
+                const time = showtimeId?.time || "N/A";
+                const qr = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=Booking:${_id}`;
+
+                const div = document.createElement("div");
+                div.className = "ticket-container";
+                div.innerHTML = `
+                <h3>${movie}</h3>
+                <p><strong>Name:</strong> ${user}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Time:</strong> ${time}</p>
+                <p><strong>Seats:</strong> ${seats
+                  .map((s) => s + 1)
+                  .join(", ")}</p>
+                <p><strong>Booked At:</strong> ${new Date(
+                  createdAt
+                ).toLocaleString()}</p>
+                <p><strong>Booking ID:</strong> ${_id}</p>
+                <img src="${qr}" alt="QR Code" />
+                <br/>
+                <button onclick="printTicket(this)">🖨️ Print</button>
+              `;
+                container.appendChild(div);
+              }
+            );
+          })
+          .catch((err) => {
+            document.getElementById("ticket-list").innerHTML =
+              "<p>⚠️ Failed to load booking history.</p>";
+            console.error("History fetch error:", err);
+          });
+      }
+
+      function printTicket(button) {
+        const card = button.parentElement.innerHTML;
+        const printWindow = window.open("", "", "width=600,height=800");
+        printWindow.document.write(`
+          <html>
+            <head><title>Print Ticket</title></head>
+            <body>${card}</body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    </script>
+  </body>
+</html>

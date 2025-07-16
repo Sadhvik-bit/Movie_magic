@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Ticket - Movie Magic</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        background: #121212;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .ticket-container {
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 20px;
+        background: #1e1e1e;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+      }
+
+      .ticket-container h1 {
+        color: #ff3d00;
+      }
+
+      .ticket-container p {
+        margin: 10px 0;
+        font-size: 16px;
+      }
+
+      .ticket-container img {
+        margin-top: 20px;
+        border-radius: 6px;
+      }
+
+      button {
+        margin-top: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #e91e63;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #ff4081;
+      }
+
+      .error {
+        color: red;
+        font-weight: bold;
+        margin-top: 100px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ticket" class="ticket-container">
+      <h1>🎟️ Movie Ticket</h1>
+      <div id="ticket-info">Loading...</div>
+      <button onclick="window.location.href='index.html'">
+        🏠 Back to Home
+      </button>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const bookingId = params.get("bookingId");
+      const ticketInfo = document.getElementById("ticket-info");
+
+      if (!bookingId) {
+        ticketInfo.innerHTML =
+          "<p class='error'>❌ Booking ID is missing from the URL.</p>";
+      } else {
+        fetch(`http://localhost:5000/api/ticket/${bookingId}`)
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to fetch ticket data");
+            return res.json();
+          })
+          .then((data) => {
+            const { booking, showtime, movie } = data;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Booking:${booking._id}`;
+
+            let formattedDate = "N/A";
+            try {
+              const dateObj = new Date(showtime.date);
+              if (!isNaN(dateObj)) {
+                formattedDate = dateObj.toLocaleDateString("en-IN", {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                });
+              }
+            } catch (e) {
+              console.error("Invalid date:", e);
+            }
+
+            ticketInfo.innerHTML = `
+            <p><strong>Name:</strong> ${booking.user}</p>
+            <p><strong>Email:</strong> ${booking.email}</p>
+            <p><strong>Movie:</strong> ${movie.title}</p>
+            <p><strong>Date:</strong> ${formattedDate}</p>
+            <p><strong>Time:</strong> ${showtime.time}</p>
+            <p><strong>Seats:</strong> ${booking.seats
+              .map((s) => s + 1)
+              .join(", ")}</p>
+            <p><strong>Booking ID:</strong> ${booking._id}</p>
+            <img src="${qrUrl}" alt="QR Code" width="150" height="150" />
+            <p style="margin-top:10px;">📧 A copy of this ticket was also sent to your email.</p>
+          `;
+          })
+          .catch((err) => {
+            console.error("Ticket fetch error:", err);
+            ticketInfo.innerHTML =
+              "<p class='error'>⚠️ Could not load ticket details.</p>";
+          });
+      }
+    </script>
+  </body>
+</html>

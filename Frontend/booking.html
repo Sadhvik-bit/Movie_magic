@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select Seats</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        background: #121212;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .seat {
+        margin: 5px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .available {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .booked {
+        background-color: #ccc;
+        color: black;
+        cursor: not-allowed;
+      }
+
+      .selected {
+        background-color: #ff9800;
+      }
+
+      #seat-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 500px;
+        margin: auto;
+      }
+
+      #movie-info {
+        text-align: center;
+        margin: 20px auto;
+        padding: 10px;
+        max-width: 500px;
+        background: #1e1e1e;
+        border-radius: 8px;
+      }
+
+      #booking-form {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      #booking-form input {
+        padding: 8px;
+        margin: 5px;
+        border-radius: 6px;
+        border: none;
+      }
+
+      #booking-form button {
+        padding: 10px 20px;
+        background-color: #e91e63;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎟️ Select Your Seats</h1>
+
+    <div id="movie-info">Loading movie details...</div>
+    <div id="seat-grid"><p>Loading seat availability...</p></div>
+
+    <h2 style="text-align: center; margin-top: 40px">Confirm Booking</h2>
+    <div id="booking-form">
+      <input type="text" id="userName" placeholder="Your Name" required />
+      <input type="email" id="email" placeholder="Your Email" required />
+      <br />
+      <button onclick="bookSeats()">Book Now</button>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const showtimeId = params.get("showtimeId");
+      let selectedSeats = [];
+
+      const movieInfoDiv = document.getElementById("movie-info");
+      const seatGrid = document.getElementById("seat-grid");
+
+      if (!showtimeId) {
+        movieInfoDiv.innerHTML =
+          "<p style='color:red;'>❌ Invalid showtime ID in URL</p>";
+      } else {
+        // Fetch showtime and movie info
+        fetch(`http://localhost:5000/api/showtime/${showtimeId}`)
+          .then((res) => res.json())
+          .then(({ showtime, movie }) => {
+            let showDate = "Invalid Date";
+            try {
+              const parsedDate = new Date(showtime.date);
+              if (!isNaN(parsedDate)) {
+                showDate = new Intl.DateTimeFormat("en-IN", {
+                  dateStyle: "medium",
+                }).format(parsedDate);
+              }
+            } catch (e) {
+              console.warn("Date parsing failed:", e);
+            }
+
+            movieInfoDiv.innerHTML = `
+              <h2>${movie.title}</h2>
+              <p><strong>Date:</strong> ${showDate}</p>
+              <p><strong>Time:</strong> ${showtime.time}</p>
+            `;
+          })
+          .catch((err) => {
+            console.error("Error fetching showtime/movie:", err);
+            movieInfoDiv.innerHTML =
+              "<p style='color:red;'>❌ Unable to load movie details.</p>";
+          });
+
+        // Fetch seat availability
+        fetch(`http://localhost:5000/api/seats/${showtimeId}`)
+          .then((res) => res.json())
+          .then((seats) => {
+            seatGrid.innerHTML = "";
+            if (!Array.isArray(seats) || seats.length === 0) {
+              seatGrid.innerHTML =
+                "<p>No seat data found for this showtime.</p>";
+              return;
+            }
+
+            seats.forEach((booked, index) => {
+              const btn = document.createElement("button");
+              btn.innerText = index + 1;
+              btn.disabled = booked;
+              btn.className = booked ? "seat booked" : "seat available";
+              btn.onclick = () => {
+                if (selectedSeats.includes(index)) {
+                  selectedSeats = selectedSeats.filter((i) => i !== index);
+                  btn.classList.remove("selected");
+                } else if (selectedSeats.length < 5) {
+                  selectedSeats.push(index);
+                  btn.classList.add("selected");
+                } else {
+                  alert("⚠️ You can select up to 5 seats only.");
+                }
+              };
+              seatGrid.appendChild(btn);
+            });
+          })
+          .catch((err) => {
+            console.error("Seat Fetch Error:", err);
+            seatGrid.innerHTML =
+              "<p style='color:red;'>⚠️ Error loading seat data</p>";
+          });
+      }
+
+      function bookSeats() {
+        const user = document.getElementById("userName").value.trim();
+        const email = document.getElementById("email").value.trim();
+
+        if (!user || !email) return alert("Please enter your name and email.");
+        if (selectedSeats.length === 0)
+          return alert("Please select at least one seat.");
+
+        fetch("http://localhost:5000/api/book", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user,
+            email,
+            seats: selectedSeats,
+            showtimeId,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              alert("✅ Booking successful! Check your email.");
+              window.location.href = `ticket.html?bookingId=${data.booking._id}`;
+            } else {
+              alert("Error: " + (data.error || "Booking failed"));
+            }
+          })
+          .catch((err) => {
+            console.error("Booking Error:", err);
+            alert("Something went wrong while booking.");
+          });
+      }
+    </script>
+  </body>
+</html>

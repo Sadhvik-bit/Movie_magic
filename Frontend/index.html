@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Magic</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        background: #121212;
+        color: white;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 24px;
+        background: #000;
+      }
+
+      .navbar .nav-left {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .navbar .nav-right a {
+        color: #fff;
+        margin-left: 16px;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .movie-card {
+        background: #1f1f1f;
+        color: white;
+        padding: 16px;
+        border-radius: 12px;
+        margin: 10px;
+        width: 280px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        text-align: center;
+      }
+
+      .movie-card img {
+        width: 100%;
+        border-radius: 10px;
+        height: 360px;
+        object-fit: cover;
+      }
+
+      .movie-card h3 {
+        margin: 10px 0 5px;
+        font-size: 20px;
+      }
+
+      .movie-card p {
+        font-size: 14px;
+        color: #ccc;
+      }
+
+      .showtimes {
+        margin-top: 10px;
+      }
+
+      .showtimes button {
+        margin: 4px;
+        padding: 6px 12px;
+        background: #ff3d00;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .movie-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 🔗 NAVBAR -->
+    <nav class="navbar">
+      <div class="nav-left">🎬 Movie Magic</div>
+      <div class="nav-right">
+        <a href="index.html">Home</a>
+        <a href="history.html">🧾 Booking History</a>
+      </div>
+    </nav>
+
+    <h1>Now Showing</h1>
+    <div id="movie-list" class="movie-list">Loading movies...</div>
+
+    <script>
+      async function loadMovies() {
+        try {
+          const res = await fetch("http://localhost:5000/api/movies");
+          const movies = await res.json();
+          const container = document.getElementById("movie-list");
+          container.innerHTML = "";
+
+          if (!movies.length) {
+            container.innerHTML = "<p>No movies found.</p>";
+            return;
+          }
+
+          movies.forEach((movie) => {
+            const card = document.createElement("div");
+            card.className = "movie-card";
+
+            const showtimeButtons = movie.showtimes?.length
+              ? movie.showtimes
+                  .map((show) => {
+                    const dateObj = new Date(show.date);
+                    const formattedDate = !isNaN(dateObj)
+                      ? dateObj.toLocaleDateString("en-IN", {
+                          weekday: "short",
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "Invalid Date";
+
+                    return `
+                      <button onclick="window.location.href='booking.html?showtimeId=${show._id}'">
+                        ${formattedDate} @ ${show.time}
+                      </button>`;
+                  })
+                  .join("")
+              : "<p>No showtimes available.</p>";
+
+            card.innerHTML = `
+              <img src="${
+                movie.posterUrl ||
+                "https://via.placeholder.com/280x360.png?text=No+Image"
+              }"
+                   alt="${movie.title}" 
+                   onerror="this.onerror=null;this.src='https://via.placeholder.com/280x360.png?text=No+Image'" />
+              <h3>${movie.title}</h3>
+              <p>${movie.description || "No description available."}</p>
+              <div class="showtimes">${showtimeButtons}</div>
+            `;
+
+            container.appendChild(card);
+          });
+        } catch (err) {
+          console.error("Failed to load movies", err);
+          document.getElementById("movie-list").innerHTML =
+            "<p>⚠️ Could not load movies.</p>";
+        }
+      }
+
+      loadMovies();
+    </script>
+  </body>
+</html>

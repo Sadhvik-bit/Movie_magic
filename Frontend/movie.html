@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Details</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- 🔗 NAVBAR -->
+    <nav class="navbar">
+      <div class="nav-left">🎬 Movie Magic</div>
+      <div class="nav-right">
+        <a href="index.html">Home</a>
+        <a href="history.html">🧾 Booking History</a>
+      </div>
+    </nav>
+
+    <div id="movie-details"></div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const movieId = urlParams.get("id");
+
+      fetch(`http://localhost:5000/api/movies/${movieId}`)
+        .then((res) => res.json())
+        .then((movie) => {
+          const container = document.getElementById("movie-details");
+          const showtimeButtons = movie.showtimes
+            .map((st) => {
+              return `<button onclick="location.href='booking.html?showtimeId=${st._id}'">${st.time}</button>`;
+            })
+            .join("");
+
+          container.innerHTML = `
+            <h1>${movie.title}</h1>
+            <img src="${movie.poster}" alt="${movie.title}" width="200"/>
+            <p><strong>Genre:</strong> ${movie.genre}</p>
+            <h3>Showtimes:</h3>
+            ${showtimeButtons}
+          `;
+        });
+    </script>
+  </body>
+</html>
