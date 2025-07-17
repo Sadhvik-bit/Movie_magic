@@ -1,6 +1,6 @@
 # 🎬 Movie Magic
 
-A modern, interactive **Movie Ticket Booking Web App** powered by **Node.js, Express, and MongoDB**.  
+A modern, interactive **Movie Ticket Booking Web App** powered by **Flask, and MongoDB**.  
 View listings, choose showtimes, book your seat, and enjoy an immersive UI – all in one place!
 
 ---
