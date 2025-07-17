@@ -26,8 +26,7 @@ View listings, choose showtimes, book your seat, and enjoy an immersive UI – a
 
 **Backend**:
 
-- Node.js
-- Express.js
+- Flask
 - RESTful API routes
 - MongoDB Atlas (cloud database)
 - Mongoose ODM
@@ -43,8 +42,8 @@ movie-magic/
 ├── backend/
 │ ├── models/ # Movie and Showtime schemas
 │ ├── routes/ # API routes for movies
-│ ├── seedMovies.js # Script to populate the database
-│ └── server.js # Express server config
+│ ├── seedMovies.py # Script to populate the database
+│ └── server.py # Express server config
 │
 ├── public/
 │ ├── index.html # Home page with movie listings
