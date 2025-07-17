@@ -33,23 +33,27 @@ Handles movie listings, showtimes, and ticket bookings with clean RESTful routes
 backend/
 │
 ├── .env               # Environment variables (PORT, MONGO_URI)
-├── index.js           # Entry point (optional - for testing or local runs)
-├── server.js          # Main server config with Express setup
-├── seed.js            # General DB seeding script
-├── seedMovies.js      # Movie-specific seeding
+├── index.py           # Entry point (optional - for testing or local runs)
+├── server.py          # Main server config with Express setup
+├── seed.py            # General DB seeding script
+├── seedMovies.py      # Movie-specific seeding
+├── _pycache_
 │
 ├── config/
 │   └── db.js          # MongoDB connection logic
+│   └── _pycache_
 │
 ├── models/
 │   └── Movie.js       # Mongoose schema for movies
 │   └── Showtime.js    # Mongoose schema for showtimes 
 |   └── Booking.js     # Mongoose schema for Booking
+│   └── _pycache_
 │
 ├── routes/
 │   └── movieRoutes.js # API routes for movies
 |   └── bookingRoutes.js # API routes for booking
 |   └── showtimeRoutes.js # API routes for showtimes
+│   └── _pycache_
 
 ```
 
